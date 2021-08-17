@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["dom", "ES2020"],
+    "allowJs": true,
+    "jsx": "preserve",
+
+    "sourceMap": true,
+    "removeComments": true,
+
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    "strict": true
+  },
+  "exclude": ["node_modules", "src/public", "dist"]
+}

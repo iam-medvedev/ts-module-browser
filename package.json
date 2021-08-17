@@ -1,0 +1,19 @@
+{
+  "name": "ts-module",
+  "version": "1.0.0",
+  "main": "dist/module.js",
+  "author": "Ilya Medvedev <ilya@medvedev.im>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently --raw -n serve,build \"serve ./src/dev\" \"ts-node-dev ./src/dev/build.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "concurrently": "^6.2.1",
+    "esbuild": "^0.12.20",
+    "prettier": "^2.3.2",
+    "serve": "^12.0.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
+  }
+}
