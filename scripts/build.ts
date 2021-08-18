@@ -2,9 +2,9 @@ import * as path from "path";
 import { build } from "esbuild";
 
 const isProduction = process.env.NODE_ENV === "production";
-const outfile = isProduction
-  ? path.resolve(__dirname, "../dist/ts-module-browser.js")
-  : path.resolve(__dirname, "../example/ts-module-browser.js");
+const outdir = isProduction
+  ? path.resolve(__dirname, "../dist")
+  : path.resolve(__dirname, "../example");
 
 build({
   bundle: true,
@@ -12,8 +12,9 @@ build({
   minify: isProduction,
   entryPoints: {
     module: path.resolve(__dirname, "../src/index.ts"),
+    sw: path.resolve(__dirname, "../src/sw.ts"),
   },
-  outfile,
+  outdir,
   loader: {
     ".ts": "ts",
   },

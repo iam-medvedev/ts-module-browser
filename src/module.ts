@@ -1,10 +1,5 @@
-import parseImports from "parse-es6-imports";
-
-enum Resolver {
-  skypack = "skypack",
-  jspm = "jspm",
-  local = "local",
-}
+import { localFilePrefix } from "./common";
+import { generateModule, Resolver } from "./transpiler";
 
 /** Create script with content */
 function createScript(type: "module" | "importmap", content: string | object) {
@@ -13,60 +8,6 @@ function createScript(type: "module" | "importmap", content: string | object) {
   scriptElement.innerHTML =
     typeof content === "object" ? JSON.stringify(content) : content;
   document.head.appendChild(scriptElement);
-}
-
-/** Detect whether dependency is a local file */
-function isLocalDependency(str: string) {
-  return str.startsWith("/") || str.startsWith(".");
-}
-
-/** File path prefix */
-function getPathForResolver(resolver: Resolver = Resolver.local) {
-  switch (resolver) {
-    case Resolver.local:
-      return "/node_modules/";
-    case Resolver.jspm:
-      return "https://jspm.dev/npm:";
-    case Resolver.skypack:
-      return "https://cdn.skypack.dev/";
-    default:
-      return "";
-  }
-}
-
-/** Generate importmap with packages from CDN or local node_modules */
-function generateImportMap(source: string, resolver?: Resolver) {
-  const imports = parseImports(source);
-  const newImports: Record<string, string> = {};
-  const prefix = getPathForResolver(resolver);
-
-  for (const im of imports) {
-    if (!isLocalDependency(im.fromModule)) {
-      newImports[im.fromModule] = `${prefix}${im.fromModule}`;
-    }
-  }
-
-  return newImports;
-}
-
-/** Generate script module and importmap for source code */
-function generateModule(source: string, resolver: Resolver) {
-  const importmap = generateImportMap(source, resolver);
-
-  // Transpiling code with typescript
-  const module = window.ts.transpile(source, {
-    target: window.ts.ScriptTarget.ESNext,
-    module: window.ts.ModuleKind.ESNext,
-    jsx: window.ts.JsxEmit.React,
-    allowJs: true,
-    allowSyntheticDefaultImports: true,
-    esModuleInterop: true,
-  });
-
-  return {
-    importmap,
-    module,
-  };
 }
 
 /** Get inline script content or load from src */
@@ -84,7 +25,10 @@ async function getScriptContent(tag: HTMLScriptElement) {
 /** Import scripts[ts-module-browser] */
 async function importScriptsTags() {
   const modules: string[] = [];
-  let importmaps: Record<string, string> = {};
+  let importmaps: Record<string, string> = {
+    // Local files mapping
+    "/": `${localFilePrefix}/`,
+  };
 
   const tags = document.querySelectorAll("script[type=ts-module-browser]");
   for (let i = 0; i < tags.length; i++) {
@@ -94,6 +38,7 @@ async function importScriptsTags() {
     if (content) {
       const resolver = tag.getAttribute("resolver") as Resolver;
       const result = generateModule(content, resolver);
+
       importmaps = { ...importmaps, ...result.importmap };
       modules.push(result.module);
     }
@@ -108,7 +53,19 @@ async function importScriptsTags() {
   tags.forEach((tag) => tag.remove());
 }
 
+/** Service worker for transpiling local files */
+async function startServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    return navigator.serviceWorker.register("./sw.js");
+  }
+
+  throw new Error(
+    "Cannot install service worker. So local files will not work."
+  );
+}
+
 /** Start compiling ts-module-browser */
 export async function start() {
+  await startServiceWorker();
   await importScriptsTags();
 }

@@ -20,8 +20,8 @@
 `ts-module-browser` compile code from `script[type="ts-module-browser"]` and load packages from CDN.
 
 ```html
-<!-- Load typescript -->
-<script src="https://unpkg.com/typescript@latest/lib/typescriptServices.js"></script>
+<div id="container"></div>
+
 <!-- Load ts-module-browser -->
 <script src="https://unpkg.com/ts-module-browser@latest"></script>
 
@@ -33,15 +33,14 @@
   import * as lodash from "lodash";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
+  import { Button } from "./local-components";
 
   function App() {
-    return <div>Hello world</div>
+    return <Button>Hello world</Button>
   }
 
   ReactDOM.render(<App />, document.getElementById('container'));
 </script>
-
-<div id="container"></div>
 ```
 
 ## Example
@@ -51,11 +50,13 @@ $ yarn example
 
 ## Work In Progress
 Please don't use `ts-module-browser` in production.
+
 - [x] Compile typescript in browser
 - [x] Load packages from CDN
-- [] Compile local files
+- [x] Compile local files
 - [x] Compile from `script[src]`
-- [ ] Load local packages from `node_modules`
+- [] Load packages from local files
+- [] Load packages from `/node_modules`
 
 ## License
 
