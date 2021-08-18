@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "dist/ts-module.js",
   "author": "Ilya Medvedev <ilya@medvedev.im>",
+  "description": "Run typescript in browser with script[type=\"ts-module\"]",
   "license": "MIT",
   "scripts": {
     "example": "concurrently --raw -n serve,build \"serve ./example\" \"ts-node-dev ./scripts/build.ts\"",
