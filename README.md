@@ -17,7 +17,7 @@
 
 ## Usage
 
-`ts-module-browser` compile code from `script[type="ts-module-browser"]` and load packages from CDN.
+`ts-module-browser` will transpile code from `script[type="ts-module-browser"]` and load packages from CDN.
 
 ```html
 <div id="container"></div>
@@ -33,7 +33,6 @@
   import * as lodash from "lodash";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
-  import { Button } from "./local-components";
 
   function App() {
     return <Button>Hello world</Button>
@@ -43,7 +42,32 @@
 </script>
 ```
 
-## Example
+### Transpile local files
+
+If you want to use local files in your code, you need to install a Service Worker. Due to SW does not work in another origin (another domain, protocol or CDN), you need to install it locally.
+
+`/sw.js`
+```javascript
+// Load sw code from CDN
+self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
+```
+
+
+`/index.html`:
+```html
+<!-- Provide path to your sw.js file -->
+<script src="module.js" data-tsmb-sw="/sw.js"></script>
+```
+
+### Available package resolvers
+All packages can be resolved using the following CDN providers:
+
+- [skypack](https://skypack.dev/)
+- [jspm](https://jspm.dev)
+
+Or via local `/node_modules` (not implemented yet).
+
+## Run example
 ```bash
 $ yarn example
 ```

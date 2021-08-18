@@ -56,7 +56,12 @@ async function importScriptsTags() {
 /** Service worker for transpiling local files */
 async function startServiceWorker() {
   if ("serviceWorker" in navigator) {
-    return navigator.serviceWorker.register("./sw.js");
+    // Getting service worker path
+    const prefix = "data-tsmb-sw";
+    const script = document.querySelector(`[${prefix}]`);
+    const swPath = script?.getAttribute(prefix) || "/sw.js";
+
+    return navigator.serviceWorker.register(swPath);
   }
 
   throw new Error(
