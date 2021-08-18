@@ -53,8 +53,8 @@ $ yarn example
 Please don't use `ts-module-browser` in production.
 - [x] Compile typescript in browser
 - [x] Load packages from CDN
-- [ ] Compile local files
-- [ ] Compile from `script[src]`
+- [] Compile local files
+- [x] Compile from `script[src]`
 - [ ] Load local packages from `node_modules`
 
 ## License

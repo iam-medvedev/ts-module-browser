@@ -7,10 +7,11 @@ enum Resolver {
 }
 
 /** Create script with content */
-function createScript(type: "module" | "importmap", content: string) {
+function createScript(type: "module" | "importmap", content: string | object) {
   const scriptElement = document.createElement("script");
   scriptElement.type = type;
-  scriptElement.innerHTML = content;
+  scriptElement.innerHTML =
+    typeof content === "object" ? JSON.stringify(content) : content;
   document.head.appendChild(scriptElement);
 }
 
@@ -50,11 +51,10 @@ function generateImportMap(source: string, resolver?: Resolver) {
 
 /** Generate script module and importmap for source code */
 function generateModule(source: string, resolver: Resolver) {
-  const importsMap = generateImportMap(source, resolver);
-  createScript("importmap", JSON.stringify({ imports: importsMap }));
+  const importmap = generateImportMap(source, resolver);
 
   // Transpiling code with typescript
-  const result = window.ts.transpile(source, {
+  const module = window.ts.transpile(source, {
     target: window.ts.ScriptTarget.ESNext,
     module: window.ts.ModuleKind.ESNext,
     jsx: window.ts.JsxEmit.React,
@@ -63,25 +63,52 @@ function generateModule(source: string, resolver: Resolver) {
     esModuleInterop: true,
   });
 
-  createScript("module", result);
+  return {
+    importmap,
+    module,
+  };
+}
+
+/** Get inline script content or load from src */
+async function getScriptContent(tag: HTMLScriptElement) {
+  const src = tag.getAttribute("src");
+
+  if (src) {
+    const content = await fetch(src).then((res) => res.text());
+    return content;
+  }
+
+  return tag.textContent;
 }
 
 /** Import scripts[ts-module-browser] */
-function importScriptsTags() {
-  const tags = document.querySelectorAll("script[type=ts-module-browser]");
+async function importScriptsTags() {
+  const modules: string[] = [];
+  let importmaps: Record<string, string> = {};
 
+  const tags = document.querySelectorAll("script[type=ts-module-browser]");
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
-    const content = tag.textContent;
-    const resolver = tag.getAttribute("resolver") as Resolver;
+    const content = await getScriptContent(tag as HTMLScriptElement);
 
     if (content) {
-      generateModule(content, resolver);
+      const resolver = tag.getAttribute("resolver") as Resolver;
+      const result = generateModule(content, resolver);
+      importmaps = { ...importmaps, ...result.importmap };
+      modules.push(result.module);
     }
   }
+
+  // Injecting scripts
+  createScript("importmap", { imports: importmaps });
+  modules.forEach((content) => {
+    createScript("module", content);
+  });
+
+  tags.forEach((tag) => tag.remove());
 }
 
 /** Start compiling ts-module-browser */
-export function start() {
-  importScriptsTags();
+export async function start() {
+  await importScriptsTags();
 }
