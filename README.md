@@ -23,7 +23,7 @@
 <!-- Load typescript -->
 <script src="https://unpkg.com/typescript@latest/lib/typescriptServices.js"></script>
 <!-- Load ts-module-browser -->
-<script src="ts-module-browser.js"></script>
+<script src="https://unpkg.com/ts-module-browser@latest"></script>
 
 <!--
   Write your code

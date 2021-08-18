@@ -5,6 +5,9 @@
   "author": "Ilya Medvedev <ilya@medvedev.im>",
   "description": "Run typescript in browser with script[type=\"ts-module-browser\"]",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "example": "concurrently --raw -n serve,build \"serve ./example\" \"ts-node-dev ./scripts/build.ts\"",
     "build": "NODE_ENV=production ts-node-dev ./scripts/build.ts",
