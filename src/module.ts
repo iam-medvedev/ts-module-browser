@@ -66,9 +66,9 @@ function generateModule(source: string, resolver: Resolver) {
   createScript("module", result);
 }
 
-/** Import scripts[ts-module] */
+/** Import scripts[ts-module-browser] */
 function importScriptsTags() {
-  const tags = document.querySelectorAll("script[type=ts-module]");
+  const tags = document.querySelectorAll("script[type=ts-module-browser]");
 
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
@@ -81,7 +81,7 @@ function importScriptsTags() {
   }
 }
 
-/** Start compiling ts-module */
+/** Start compiling ts-module-browser */
 export function start() {
   importScriptsTags();
 }

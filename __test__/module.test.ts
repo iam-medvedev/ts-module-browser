@@ -6,7 +6,7 @@ beforeEach(() => {
 
   // Set up our document body
   document.head.innerHTML = `
-    <script type="ts-module" resolver="skypack">
+    <script type="ts-module-browser" resolver="skypack">
       import * as lodash from "lodash";
       import * as React from "react";
       import * as ReactDOM from "react-dom";
@@ -19,7 +19,7 @@ beforeEach(() => {
     </script>`;
 });
 
-describe("generate script[type=module] from script[ts-module]", () => {
+describe("generate script[type=module] from script[ts-module-browser]", () => {
   it("generate right code", () => {
     start();
 

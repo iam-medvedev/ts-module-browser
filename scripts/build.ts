@@ -3,8 +3,8 @@ import { build } from "esbuild";
 
 const isProduction = process.env.NODE_ENV === "production";
 const outfile = isProduction
-  ? path.resolve(__dirname, "../dist/ts-module.js")
-  : path.resolve(__dirname, "../example/ts-module.js");
+  ? path.resolve(__dirname, "../dist/ts-module-browser.js")
+  : path.resolve(__dirname, "../example/ts-module-browser.js");
 
 build({
   bundle: true,
