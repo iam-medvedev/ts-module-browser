@@ -1,5 +1,9 @@
-import { localSearchPath } from "./common";
-import { generateImportMap, Resolver, transpile } from "./transpiler";
+import {
+  createScript,
+  localSearchPath,
+  Resolver,
+  TraverseResult,
+} from "./utils";
 
 /** Injecting scripts in DOM */
 function injectScripts({
@@ -18,15 +22,6 @@ function injectScripts({
   }
 }
 
-/** Create script with content */
-function createScript(type: "module" | "importmap", content: string | object) {
-  const scriptElement = document.createElement("script");
-  scriptElement.type = type;
-  scriptElement.innerHTML =
-    typeof content === "object" ? JSON.stringify(content) : content;
-  document.head.appendChild(scriptElement);
-}
-
 /** Get inline script content or load from src */
 async function getScriptContent(tag: HTMLScriptElement) {
   const src = tag.getAttribute("src");
@@ -39,29 +34,24 @@ async function getScriptContent(tag: HTMLScriptElement) {
   return tag.textContent;
 }
 
-/** Import scripts[ts-module-browser] */
-async function parseScriptsTags(resolver: Resolver) {
-  const modules: string[] = [];
-  const localFiles: string[] = [];
-  let packages: Record<string, string> = {};
+/** Parse source code from scripts[ts-module-browser] */
+async function parseScriptsTags() {
+  const sources: string[] = [];
 
   const tags = document.querySelectorAll("script[type=ts-module-browser]");
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
-    const content = await getScriptContent(tag as HTMLScriptElement);
+    const source = await getScriptContent(tag as HTMLScriptElement);
 
-    if (content) {
-      const dependencies = generateImportMap(content, resolver);
-      packages = { ...packages, ...dependencies.packages };
-      localFiles.push(...dependencies.localFiles);
-      modules.push(transpile(content));
+    if (source) {
+      sources.push(source);
 
       // Removing source tag
       tag.remove();
     }
   }
 
-  return { modules, packages, localFiles };
+  return sources;
 }
 
 /** Service worker for transpiling local files */
@@ -88,15 +78,15 @@ function getConfig() {
   return { swPath, resolver };
 }
 
-/** Parse local files */
-async function parseLocalFiles(localFiles: string[], resolver: Resolver) {
-  return await fetch(localSearchPath, {
+/** Transpile code with service worker */
+async function buildCodeInSW(sources: string[], resolver: Resolver) {
+  return (await fetch(localSearchPath, {
     method: "POST",
     body: JSON.stringify({
-      files: localFiles,
+      sources,
       resolver,
     }),
-  }).then((res) => res.json());
+  }).then((res) => res.json())) as TraverseResult;
 }
 
 /** Start compiling ts-module-browser */
@@ -108,18 +98,14 @@ export async function start() {
   }
 
   await startServiceWorker(config.swPath);
-
-  const { localFiles, ...scriptsResult } = await parseScriptsTags(
-    config.resolver
-  );
-  const localResult = await parseLocalFiles(localFiles, config.resolver);
+  const sources = await parseScriptsTags();
+  const result = await buildCodeInSW(sources, config.resolver);
 
   await injectScripts({
-    modules: scriptsResult.modules,
+    modules: result.modules,
     importmap: {
-      ...scriptsResult.packages,
-      ...localResult.filePaths,
-      ...localResult.packages,
+      ...result.packages,
+      ...result.filePaths,
     },
   });
 }

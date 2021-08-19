@@ -5013,11 +5013,6 @@ parse-conflict-json@^1.1.1:
     just-diff "^3.0.1"
     just-diff-apply "^3.0.0"
 
-parse-es6-imports@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/parse-es6-imports/-/parse-es6-imports-1.0.1.tgz#fbfea61afcd94435c7f697fc439616c18853771b"
-  integrity sha1-+/6mGvzZRDXH9pf8Q5YWwYhTdxs=
-
 parse-json@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/parse-json/-/parse-json-4.0.0.tgz#be35f5425be1f7f6c747184f98a788cb99477ee0"

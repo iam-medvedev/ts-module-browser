@@ -17,13 +17,13 @@
 
 ## Features
 
-- Transpiling typescript code from `script[type="ts-module-browser"]`
+- Transpiling typescript code from `script[type="ts-module-browser"]` through Service Worker
 - Ability to resolve packages through [CDN](#available-package-resolvers)
-- Loading local typescript files through Service Worker
+- Loading local typescript files
 
 ## Usage
 
-If you want to use local files in your code, you need to install a Service Worker. Due to SW does not work in another origin (another domain, protocol or CDN), you need to install it locally.
+The code in the browser is transpiled using a Service Worker. Due to Service Worker does not work in another origin (another domain, protocol or CDN), you need to install it locally.
 
 `/sw.js`
 ```javascript
@@ -43,7 +43,7 @@ self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
   import * as lodash from "lodash";
   import * as React from "react";
   import * as ReactDOM from "react-dom";
-  import { Button }from "./some-local-component";
+  import { Button } from "./some-local-component";
 
   function App() {
     return <Button>Hello world</Button>
