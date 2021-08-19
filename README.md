@@ -27,6 +27,9 @@ The code in the browser is transpiled using a Service Worker. Due to Service Wor
 
 `/sw.js`
 ```javascript
+// Load typescript
+self.importScripts("https://unpkg.com/typescript@latest/lib/typescriptServices.js");
+
 // Load sw code from CDN
 self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
 ```

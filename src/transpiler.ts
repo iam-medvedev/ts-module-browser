@@ -1,9 +1,4 @@
-import {
-  JsxEmit,
-  ModuleKind,
-  ScriptTarget,
-  transpile as transpileTs,
-} from "typescript";
+/// <reference lib="WebWorker" />
 import {
   getPathForResolver,
   isLocalDependency,
@@ -11,6 +6,14 @@ import {
   resolvePath,
   Resolver,
 } from "./utils";
+
+if (!self.ts) {
+  self.importScripts(
+    "https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js"
+  );
+}
+
+const { JsxEmit, ModuleKind, ScriptTarget, transpile: transpileTs } = self.ts;
 
 /** Generate importmap with packages from CDN or local node_modules */
 export async function getSourceDependencies({
