@@ -85,6 +85,11 @@ Please don't use `ts-module-browser` in production.
 - [x] Compile from `script[src]`
 - [x] Load packages from local files
 - [ ] Load packages from `/node_modules`
+- [ ] Parse versions from package.json and lock
+  - [x] package-lock.json
+  - [ ] yarn.lock v1
+  - [x] yarn.lock v2
+
 
 ## License
 

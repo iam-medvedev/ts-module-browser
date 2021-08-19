@@ -1,4 +1,6 @@
 /// <reference lib="WebWorker" />
+import type { PackageJson } from "type-fest";
+import { parsePackageLockJson, parseYarnLockFile } from "./lockfile";
 import { getSourceDependencies, transpile } from "./transpiler";
 import {
   localSearchPath,
@@ -34,6 +36,28 @@ async function getDependencySource(path: string) {
 
       if (source) {
         return { source, path: p };
+      }
+    } catch (e) {}
+  }
+}
+
+/** Search for lockfile*/
+async function getLockFile() {
+  const paths = ["/yarn.lock", "/package-lock.json"];
+
+  for (const p of paths) {
+    try {
+      const source = await fetch(p).then((res) => {
+        if (res.status === 200) {
+          return res.text();
+        }
+      });
+
+      if (source) {
+        return {
+          source,
+          type: p === paths[0] ? "yarn" : "npm",
+        };
       }
     } catch (e) {}
   }
@@ -108,10 +132,34 @@ async function traverseLocalFiles(
   }
 }
 
+/** Getting package.json from local */
+async function getLocalPackageVersions() {
+  try {
+    const packageJson = (await fetch("/package.json").then((res) =>
+      res.json()
+    )) as PackageJson;
+    const lockFile = await getLockFile();
+
+    if (packageJson && lockFile) {
+      if (lockFile.type === "yarn") {
+        return await parseYarnLockFile(packageJson, lockFile.source);
+      } else {
+        return await parsePackageLockJson(
+          packageJson,
+          JSON.parse(lockFile.source)
+        );
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 /** Compile local dependencies on the fly */
 function transpileSourcesHook(req: Request): Promise<Response> {
   return new Promise(async (resolve) => {
     const { sources, resolver } = await req.json();
+    const packageVersions = (await getLocalPackageVersions()) || {};
 
     const result: TraverseResult = {
       packages: {},
@@ -134,6 +182,14 @@ function transpileSourcesHook(req: Request): Promise<Response> {
         result
       );
     }
+
+    // Set versions for packages
+    result.packages = Object.keys(result.packages).reduce((res, key) => {
+      return {
+        ...res,
+        [key]: `${result.packages[key]}@${packageVersions[key] || ""}`,
+      };
+    }, {});
 
     return resolve(
       new Response(JSON.stringify(result), {

@@ -97,6 +97,12 @@ export async function start() {
     throw new Error("Provide service worker path");
   }
 
+  if (config.resolver === Resolver.local) {
+    throw new Error(
+      "Local resolver is not implemented yet. Please provide another one."
+    );
+  }
+
   await startServiceWorker(config.swPath);
   const sources = await parseScriptsTags();
   const result = await buildCodeInSW(sources, config.resolver);
