@@ -32,22 +32,25 @@ function getPathForResolver(resolver: Resolver = Resolver.local) {
 }
 
 /** Generate importmap with packages from CDN or local node_modules */
-function generateImportMap(source: string, resolver?: Resolver) {
+export function generateImportMap(source: string, resolver?: Resolver) {
   const imports = parseImports(source);
-  const newImports: Record<string, string> = {};
+  const packages: Record<string, string> = {};
+  const localFiles: string[] = [];
   const prefix = getPathForResolver(resolver);
 
   for (const im of imports) {
-    if (!isLocalDependency(im.fromModule)) {
-      newImports[im.fromModule] = `${prefix}${im.fromModule}`;
+    if (isLocalDependency(im.fromModule)) {
+      localFiles.push(im.fromModule);
+    } else {
+      packages[im.fromModule] = `${prefix}${im.fromModule}`;
     }
   }
 
-  return newImports;
+  return { packages, localFiles };
 }
 
 /** Typescript transpiler */
-function transpile(source: string) {
+export function transpile(source: string) {
   return transpileTs(source, {
     target: ScriptTarget.ESNext,
     module: ModuleKind.ESNext,
@@ -56,17 +59,4 @@ function transpile(source: string) {
     allowSyntheticDefaultImports: true,
     esModuleInterop: true,
   });
-}
-
-/** Generate script module and importmap for source code */
-export function generateModule(source: string, resolver: Resolver) {
-  const importmap = generateImportMap(source, resolver);
-
-  // Transpiling code with typescript
-  const module = transpile(source);
-
-  return {
-    importmap,
-    module,
-  };
 }

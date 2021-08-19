@@ -1,1 +1,1 @@
-export const localFilePrefix = "/tsmb:";
+export const localSearchPath = "/__tsmb-search__/";

@@ -6,25 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test ts-module-browser</title>
 
-    <script src="module.js" data-tsmb-sw="/sw.js"></script>
-    <script type="ts-module-browser" resolver="skypack">
+    <script
+      src="module.js"
+      data-tsmb-sw="/sw.js"
+      data-tsmb-resolver="skypack"
+    ></script>
+    <script type="ts-module-browser">
       import * as lodash from "lodash";
       import * as React from "react";
       import * as ReactDOM from "react-dom";
       import { Button } from './local-component'
 
       function App() {
-        return <div>Hello world <br/> <Button /></div>
+        return <div>Hello world <br/> <Button>Test</Button></div>
       }
 
       ReactDOM.render(<App />, document.getElementById('container'));
     </script>
 
-    <script
-      type="ts-module-browser"
-      src="./local-script.ts"
-      resolver="skypack"
-    ></script>
+    <script type="ts-module-browser" src="./local-script.ts"></script>
   </head>
   <body>
     <div id="container"></div>

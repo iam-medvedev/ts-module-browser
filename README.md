@@ -12,37 +12,16 @@
 </div>
 
 <div align="center">
-  Run typescript in browser with <code>script[type="ts-module-browser"]</code>.
+  Run typescript in browser with <code>script[type="ts-module-browser"]</code> without bundler
 </div>
 
+## Features
+
+- Transpiling typescript code from `script[type="ts-module-browser"]`
+- Ability to resolve packages through [CDN](#available-package-resolvers)
+- Loading local typescript files through Service Worker
+
 ## Usage
-
-`ts-module-browser` will transpile code from `script[type="ts-module-browser"]` and load packages from CDN.
-
-```html
-<div id="container"></div>
-
-<!-- Load ts-module-browser -->
-<script src="https://unpkg.com/ts-module-browser@latest"></script>
-
-<!--
-  Write your code
-  All packages will be loaded from the provided resolver (skypack | jspm)
--->
-<script type="ts-module-browser" resolver="skypack">
-  import * as lodash from "lodash";
-  import * as React from "react";
-  import * as ReactDOM from "react-dom";
-
-  function App() {
-    return <Button>Hello world</Button>
-  }
-
-  ReactDOM.render(<App />, document.getElementById('container'));
-</script>
-```
-
-### Transpile local files
 
 If you want to use local files in your code, you need to install a Service Worker. Due to SW does not work in another origin (another domain, protocol or CDN), you need to install it locally.
 
@@ -52,20 +31,45 @@ If you want to use local files in your code, you need to install a Service Worke
 self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
 ```
 
+`/index.html`:
+```html
+<div id="container"></div>
+
+<!-- Load ts-module-browser and provide path to your local sw.js file -->
+<script src="https://unpkg.com/ts-module-browser@latest" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
+
+<!-- Write your code -->
+<script type="ts-module-browser">
+  import * as lodash from "lodash";
+  import * as React from "react";
+  import * as ReactDOM from "react-dom";
+  import { Button }from "./some-local-component";
+
+  function App() {
+    return <Button>Hello world</Button>
+  }
+
+  ReactDOM.render(<App />, document.getElementById('container'));
+</script>
+```
+
+### Local usage
+```bash
+yarn install ts-module-browser -D
+```
 
 `/index.html`:
 ```html
-<!-- Provide path to your sw.js file -->
-<script src="module.js" data-tsmb-sw="/sw.js"></script>
+<!-- Provide path to ts-module-browser location -->
+<script src="node_modules/ts-module-browser/dist/module.js" data-tsmb-sw="node_modules/ts-module-browser/dist/sw.js" data-tsmb-resolver="local"></script>
 ```
 
 ### Available package resolvers
-All packages can be resolved using the following CDN providers:
+All packages can be resolved using the following providers:
 
 - [skypack](https://skypack.dev/)
 - [jspm](https://jspm.dev)
-
-Or via local `/node_modules` (not implemented yet).
+- local (`/node_modules`) (not implemented yet).
 
 ## Run example
 ```bash
@@ -79,8 +83,8 @@ Please don't use `ts-module-browser` in production.
 - [x] Load packages from CDN
 - [x] Compile local files
 - [x] Compile from `script[src]`
-- [] Load packages from local files
-- [] Load packages from `/node_modules`
+- [x] Load packages from local files
+- [ ] Load packages from `/node_modules`
 
 ## License
 
