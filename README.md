@@ -90,8 +90,9 @@ Please don't use `ts-module-browser` in production.
 - [ ] Load packages from `/node_modules`
 - [ ] Parse versions from package.json and lock
   - [x] package-lock.json
-  - [ ] yarn.lock v1
+  - [x] yarn.lock v1
   - [x] yarn.lock v2
+  - [ ] parse protocols
 
 
 ## License

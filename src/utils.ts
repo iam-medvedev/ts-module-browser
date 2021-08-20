@@ -66,3 +66,18 @@ export function parseImports(source: string) {
   const matches = source.match(regex);
   return matches?.length ? [...new Set(matches)] : [];
 }
+
+const logPrefix = "[ts-module-browser]";
+export const log = {
+  log: (...message: any[]) => console.log(logPrefix, ...message),
+  info: (...message: any[]) => console.info(logPrefix, ...message),
+  error: (...message: any[]) => console.error(logPrefix, ...message),
+};
+
+export class ModuleError extends Error {
+  name = logPrefix;
+
+  constructor(message: string) {
+    super(message);
+  }
+}

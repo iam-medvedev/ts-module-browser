@@ -4,6 +4,7 @@ import { parsePackageLockJson, parseYarnLockFile } from "./lockfile";
 import { getSourceDependencies, transpile } from "./transpiler";
 import {
   localSearchPath,
+  log,
   normalizeFilePath,
   Resolver,
   TraverseResult,
@@ -37,7 +38,9 @@ async function getDependencySource(path: string) {
       if (source) {
         return { source, path: p };
       }
-    } catch (e) {}
+    } catch (e) {
+      log.error(`Dependency is not found: ${path}\n`, paths);
+    }
   }
 }
 
@@ -59,7 +62,11 @@ async function getLockFile() {
           type: p === paths[0] ? "yarn" : "npm",
         };
       }
-    } catch (e) {}
+    } catch (e) {
+      log.error(
+        `Cannot get lockfile, so latest versions of packages would be loaded`
+      );
+    }
   }
 }
 
@@ -87,6 +94,7 @@ function transpileFileHook(url: string): Promise<Response> {
       );
     }
 
+    log.error(`An error occured while transpiling file: ${url}`);
     reject();
   });
 }
@@ -151,7 +159,11 @@ async function getLocalPackageVersions() {
       }
     }
   } catch (e) {
-    console.error(e);
+    log.error(
+      "An error occured while parsing lockfile and package.json, so latest versions of packages would be loaded"
+    );
+  } finally {
+    return {};
   }
 }
 
@@ -185,10 +197,14 @@ function transpileSourcesHook(req: Request): Promise<Response> {
 
     // Set versions for packages
     result.packages = Object.keys(result.packages).reduce((res, key) => {
-      return {
-        ...res,
-        [key]: `${result.packages[key]}@${packageVersions[key] || ""}`,
-      };
+      if (packageVersions.hasOwnProperty(key)) {
+        return {
+          ...res,
+          [key]: `${result.packages[key]}@${packageVersions[key]}`,
+        };
+      }
+
+      return { ...res, [key]: result.packages[key] };
     }, {});
 
     return resolve(

@@ -1,6 +1,7 @@
 import {
   createScript,
   localSearchPath,
+  ModuleError,
   Resolver,
   TraverseResult,
 } from "./utils";
@@ -60,7 +61,7 @@ async function startServiceWorker(swPath: string) {
     return navigator.serviceWorker.register(swPath);
   }
 
-  throw new Error(
+  throw new ModuleError(
     "Cannot install service worker. So local files will not work."
   );
 }
@@ -94,11 +95,11 @@ export async function start() {
   const config = getConfig();
 
   if (!config.swPath) {
-    throw new Error("Provide service worker path");
+    throw new ModuleError("Provide service worker path");
   }
 
   if (config.resolver === Resolver.local) {
-    throw new Error(
+    throw new ModuleError(
       "Local resolver is not implemented yet. Please provide another one."
     );
   }
