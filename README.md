@@ -17,10 +17,10 @@
 
 ## Run examples
 
-You can see the [source](./examples) code of the examples, or [see it in action](https://iam-medvedev.github.io/ts-module-browser/examples).
+You can see the [source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples) code of the examples, or [see it in action](https://iam-medvedev.github.io/ts-module-browser/examples).
 
-- React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/examples/react-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
-- React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/examples/react-styled-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
+- React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
+- React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
 
 Also you can run the examples locally using the command:
 ```bash
