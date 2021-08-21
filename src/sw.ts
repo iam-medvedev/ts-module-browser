@@ -100,11 +100,19 @@ function transpileFileHook(url: string): Promise<Response> {
 }
 
 /** Searchs packages in local files */
-async function traverseLocalFiles(
-  _files: string[],
-  resolver: Resolver,
-  result: TraverseResult
-) {
+async function traverseLocalFiles({
+  files: _files,
+  resolver,
+  result,
+  origin,
+  referrer,
+}: {
+  files: string[];
+  resolver: Resolver;
+  result: TraverseResult;
+  origin: string;
+  referrer: string;
+}) {
   if (!_files || !_files.length) {
     return result;
   }
@@ -113,8 +121,10 @@ async function traverseLocalFiles(
 
   if (files.length) {
     for (const file of files) {
-      const normalizedPath = normalizeFilePath(file);
-      const dep = await getDependencySource(normalizedPath);
+      const dependencyPath = `${referrer.replace(/\/$/, "")}${normalizeFilePath(
+        file
+      )}`;
+      const dep = await getDependencySource(dependencyPath);
 
       if (dep?.source) {
         const parsedSource = await getSourceDependencies({
@@ -123,17 +133,22 @@ async function traverseLocalFiles(
           root: dep.path,
         });
         result.packages = { ...result.packages, ...parsedSource.packages };
-        result.filePaths = { ...result.filePaths, [normalizedPath]: dep.path };
+        result.filePaths = {
+          ...result.filePaths,
+          [referrer.endsWith("/") ? dependencyPath : file]: dep.path,
+        };
 
         const innerFiles = parsedSource.localFiles.filter(
           (file) => !result.filePaths.hasOwnProperty(file)
         );
         if (innerFiles.length) {
-          await traverseLocalFiles(
-            [...new Set(parsedSource.localFiles)],
+          await traverseLocalFiles({
+            files: [...new Set(parsedSource.localFiles)],
             resolver,
-            result
-          );
+            result,
+            origin,
+            referrer,
+          });
         }
       }
     }
@@ -188,11 +203,13 @@ function transpileSourcesHook(req: Request): Promise<Response> {
       result.packages = { ...result.packages, ...packages };
       result.modules.push(transpile(source));
 
-      await traverseLocalFiles(
-        localFiles.map((el) => `${self.origin}${normalizeFilePath(el)}`),
+      await traverseLocalFiles({
+        files: localFiles.map((el) => normalizeFilePath(el)),
         resolver,
-        result
-      );
+        result,
+        origin: self.origin,
+        referrer: req.referrer,
+      });
     }
 
     // Set versions for packages

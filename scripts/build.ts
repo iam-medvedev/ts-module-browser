@@ -4,7 +4,7 @@ import { build } from "esbuild";
 const isProduction = process.env.NODE_ENV === "production";
 const outdir = isProduction
   ? path.resolve(__dirname, "../dist")
-  : path.resolve(__dirname, "../example");
+  : path.resolve(__dirname, "../.dev");
 
 build({
   bundle: true,

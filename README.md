@@ -15,6 +15,18 @@
   Run typescript in browser with <code>script[type="ts-module-browser"]</code> without bundler
 </div>
 
+## Run examples
+
+You can see the [source](./examples) code of the examples, or [see it in action](https://iam-medvedev.github.io/ts-module-browser/examples).
+
+- React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/examples/react-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
+- React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/examples/react-styled-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
+
+Also you can run the examples locally using the command:
+```bash
+$ yarn examples
+```
+
 ## Features
 
 - Transpiling typescript code from `script[type="ts-module-browser"]` through Service Worker
@@ -23,15 +35,15 @@
 
 ## Usage
 
-The code in the browser is transpiled using a Service Worker. Due to Service Worker does not work in another origin (another domain, protocol or CDN), you need to install it locally.
+The code in the browser is transpiled using a Service Worker. Due to Service Worker does not work in another origin (another domain, protocol or CDN), you need to install it locally:
 
 `/sw.js`
 ```javascript
-// Load typescript
-self.importScripts("https://unpkg.com/typescript@latest/lib/typescriptServices.js");
+// Load typescript (you can use any version you want)
+self.importScripts("https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js");
 
 // Load sw code from CDN
-self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
+self.importScripts("https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js");
 ```
 
 `/index.html`:
@@ -39,7 +51,7 @@ self.importScripts("https://unpkg.com/ts-module-browser@latest/dist/sw.js");
 <div id="container"></div>
 
 <!-- Load ts-module-browser and provide path to your local sw.js file -->
-<script src="https://unpkg.com/ts-module-browser@latest" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
+<script src="https://cdn.jsdelivr.net/npm/ts-module-browser@latest" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
 
 <!-- Write your code -->
 <script type="ts-module-browser">
@@ -73,11 +85,6 @@ All packages can be resolved using the following providers:
 - [skypack](https://skypack.dev/)
 - [jspm](https://jspm.dev)
 - local (`/node_modules`) (not implemented yet).
-
-## Run example
-```bash
-$ yarn example
-```
 
 ## Work In Progress
 Please don't use `ts-module-browser` in production.

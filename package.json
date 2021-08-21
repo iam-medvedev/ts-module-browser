@@ -4,14 +4,19 @@
   "main": "dist/module.js",
   "author": "Ilya Medvedev <ilya@medvedev.im>",
   "description": "Run typescript in browser with script[type=\"ts-module-browser\"]",
+  "repository": "https://github.com/iam-medvedev/ts-module-browser.git",
+  "homepage": "https://iam-medvedev.github.io/ts-module-browser#readme",
+  "bugs": "https://github.com/iam-medvedev/ts-module-browser/issues",
   "license": "MIT",
   "files": [
     "dist"
   ],
   "scripts": {
-    "example": "concurrently --raw -n serve,build \"serve ./example\" \"ts-node-dev ./scripts/build.ts\"",
+    "dev": "concurrently --raw -n serve,build \"serve ./.dev\" \"ts-node-dev ./scripts/build.ts\"",
+    "examples": "serve ./examples",
     "build": "NODE_ENV=production ts-node-dev ./scripts/build.ts",
     "commit": "yarn git-cz",
+    "doc": "sitedown ./ -l ./readme-layout.html -b ./.gh-pages && cp -R ./examples ./.gh-pages/examples",
     "test": "jest --watch"
   },
   "devDependencies": {
@@ -35,6 +40,7 @@
     "prettier": "^2.3.2",
     "semantic-release": "^17.4.4",
     "serve": "^12.0.0",
+    "sitedown": "^5.0.0",
     "ts-jest": "^27.0.5",
     "ts-node-dev": "^1.1.8",
     "type-fest": "^2.0.0",
