@@ -40,10 +40,10 @@ The code in the browser is transpiled using a Service Worker. Due to Service Wor
 `/sw.js`
 ```javascript
 // Load typescript (you can use any version you want)
-self.importScripts("https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js");
+self.importScripts("https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js");
 
 // Load sw code from CDN
-self.importScripts("https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js");
+self.importScripts("https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js");
 ```
 
 `/index.html`:
@@ -51,7 +51,7 @@ self.importScripts("https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/s
 <div id="container"></div>
 
 <!-- Load ts-module-browser and provide path to your local sw.js file -->
-<script src="https://cdn.jsdelivr.net/npm/ts-module-browser@latest" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
+<script src="https://unpkg.com/ts-module-browser@1.3.5" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
 
 <!-- Write your code -->
 <script type="ts-module-browser">
@@ -69,6 +69,8 @@ self.importScripts("https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/s
 ```
 
 ### Local usage
+*Not implemented yet.*
+
 ```bash
 yarn install ts-module-browser -D
 ```
@@ -84,7 +86,8 @@ All packages can be resolved using the following providers:
 
 - [skypack](https://skypack.dev/)
 - [jspm](https://jspm.dev)
-- local (`/node_modules`) (not implemented yet).
+- [jsdelivr](https://jsdelivr.com)
+- local (`/node_modules`) *(not implemented yet)*
 
 ## Work In Progress
 Please don't use `ts-module-browser` in production.

@@ -9,7 +9,7 @@ import {
 
 if (!self.ts) {
   self.importScripts(
-    "https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js"
+    "https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js"
   );
 }
 

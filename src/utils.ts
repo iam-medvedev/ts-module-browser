@@ -36,6 +36,7 @@ export enum Resolver {
   skypack = "skypack",
   jspm = "jspm",
   local = "local",
+  jsdelivr = "jsdelivr",
 }
 
 /** Detect whether dependency is a local file */
@@ -52,6 +53,8 @@ export function getPathForResolver(resolver: Resolver = Resolver.local) {
       return "https://jspm.dev/npm:";
     case Resolver.skypack:
       return "https://cdn.skypack.dev/";
+    case Resolver.jsdelivr:
+      return "https://cdn.jsdelivr.net/npm/";
     default:
       return "";
   }

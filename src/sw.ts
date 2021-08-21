@@ -118,12 +118,14 @@ async function traverseLocalFiles({
   }
 
   const files = _files.filter((file) => !result.filePaths.hasOwnProperty(file));
+  const cleanReferrer = referrer.replace(/\/$/, "");
 
   if (files.length) {
     for (const file of files) {
-      const dependencyPath = `${referrer.replace(/\/$/, "")}${normalizeFilePath(
-        file
-      )}`;
+      const normalizedFile = normalizeFilePath(file);
+      const dependencyPath = normalizedFile.includes(cleanReferrer)
+        ? normalizedFile
+        : `${cleanReferrer}${normalizedFile}`;
       const dep = await getDependencySource(dependencyPath);
 
       if (dep?.source) {
