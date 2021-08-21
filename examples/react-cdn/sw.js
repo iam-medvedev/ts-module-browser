@@ -1,9 +1,7 @@
 // Load typescript (you can use any version you want)
 self.importScripts(
-  "https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js"
+  "https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js"
 );
 
 // Load sw code from CDN
-self.importScripts(
-  "https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js"
-);
+self.importScripts("https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js");

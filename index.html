@@ -53,16 +53,16 @@
 <p>The code in the browser is transpiled using a Service Worker. Due to Service Worker does not work in another origin (another domain, protocol or CDN), you need to install it locally:</p>
 <p><code>/sw.js</code></p>
 <pre><code class="hljs language-javascript"><span class="hljs-comment">// Load typescript (you can use any version you want)</span>
-self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js"</span>);
+self.importScripts(<span class="hljs-string">"https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js"</span>);
 
 <span class="hljs-comment">// Load sw code from CDN</span>
-self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js"</span>);
+self.importScripts(<span class="hljs-string">"https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js"</span>);
 </code></pre>
 <p><code>/index.html</code>:</p>
 <pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Load ts-module-browser and provide path to your local sw.js file --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-module-browser@latest"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"skypack"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/ts-module-browser@1.3.5"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"skypack"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Write your code --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"ts-module-browser"</span>&gt;</span><span class="javascript">
@@ -79,6 +79,7 @@ self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-mo
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
 <h3>Local usage</h3>
+<p><em>Not implemented yet.</em></p>
 <pre><code class="hljs language-bash">yarn install ts-module-browser -D
 </code></pre>
 <p><code>/index.html</code>:</p>
@@ -90,7 +91,8 @@ self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-mo
 <ul>
 <li><a href="https://skypack.dev/">skypack</a></li>
 <li><a href="https://jspm.dev">jspm</a></li>
-<li>local (<code>/node_modules</code>) (not implemented yet).</li>
+<li><a href="https://jsdelivr.com">jsdelivr</a></li>
+<li>local (<code>/node_modules</code>) <em>(not implemented yet)</em></li>
 </ul>
 <h2>Work In Progress</h2>
 <p>Please don’t use <code>ts-module-browser</code> in production.</p>
