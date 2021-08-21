@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ts-module-browser [beta]</title>
+    <link rel="stylesheet" href="https://unpkg.com/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/highlight.js@11.2.0/styles/default.css">
+    <style type="text/css">
+      .markdown-body {
+        max-width: 46em;
+        margin: 2em auto;
+        padding: 0 1em;
+        overflow: hidden;
+        word-wrap: break-word;
+      }
+
+      pre {
+        padding: 0;
+        background-color: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="markdown-body"><h1 align="center">
+  ts-module-browser <sup>[beta]</sup>
+</h1>
+<div align="center">
+  <a href="http://www.typescriptlang.org/"><img src="https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg" alt="TypeScript"></a>
+  <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-f8bc45.svg" alt="code style: prettier"></a>
+  <a href="https://www.npmjs.com/package/ts-module-browser"><img src="https://badge.fury.io/js/ts-module-browser.svg" alt="npm version"></a>
+  <a href="https://david-dm.org/iam-medvedev/ts-module-browser"><img src="https://status.david-dm.org/gh/iam-medvedev/ts-module-browser.svg" alt="David"></a>
+  <a href="https://david-dm.org/iam-medvedev/ts-module-browser"><img src="https://status.david-dm.org/gh/iam-medvedev/ts-module-browser.svg?type=dev" alt="David"></a>
+  <a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
+</div>
+<div align="center">
+  Run typescript in browser with <code>script[type="ts-module-browser"]</code> without bundler
+</div>
+<h2>Run examples</h2>
+<p>You can see the <a href="./examples">source</a> code of the examples, or <a href="https://iam-medvedev.github.io/ts-module-browser/examples">see it in action</a>.</p>
+<ul>
+<li>React from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/examples/react-cdn">source</a>, <a href="https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn">codesandbox</a>)</li>
+<li>React + Styled Components from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/examples/react-styled-cdn">source</a>, <a href="https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn">codesandbox</a>)</li>
+</ul>
+<p>Also you can run the examples locally using the command:</p>
+<pre><code class="hljs language-bash">$ yarn examples
+</code></pre>
+<h2>Features</h2>
+<ul>
+<li>Transpiling typescript code from <code>script[type="ts-module-browser"]</code> through Service Worker</li>
+<li>Ability to resolve packages through <a href="#available-package-resolvers">CDN</a></li>
+<li>Loading local typescript files</li>
+</ul>
+<h2>Usage</h2>
+<p>The code in the browser is transpiled using a Service Worker. Due to Service Worker does not work in another origin (another domain, protocol or CDN), you need to install it locally:</p>
+<p><code>/sw.js</code></p>
+<pre><code class="hljs language-javascript"><span class="hljs-comment">// Load typescript (you can use any version you want)</span>
+self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/typescript@latest/lib/typescriptServices.js"</span>);
+
+<span class="hljs-comment">// Load sw code from CDN</span>
+self.importScripts(<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js"</span>);
+</code></pre>
+<p><code>/index.html</code>:</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Load ts-module-browser and provide path to your local sw.js file --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/ts-module-browser@latest"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"skypack"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Write your code --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"ts-module-browser"</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> lodash <span class="hljs-keyword">from</span> <span class="hljs-string">"lodash"</span>;
+  <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">"react"</span>;
+  <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">"react-dom"</span>;
+  <span class="hljs-keyword">import</span> { Button } <span class="hljs-keyword">from</span> <span class="hljs-string">"./some-local-component"</span>;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">App</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Button</span>&gt;</span>Hello world<span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span></span>
+  }
+
+  ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span></span>, <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'container'</span>));
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h3>Local usage</h3>
+<pre><code class="hljs language-bash">yarn install ts-module-browser -D
+</code></pre>
+<p><code>/index.html</code>:</p>
+<pre><code class="hljs language-html"><span class="hljs-comment">&lt;!-- Provide path to ts-module-browser location --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"node_modules/ts-module-browser/dist/module.js"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"node_modules/ts-module-browser/dist/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"local"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h3>Available package resolvers</h3>
+<p>All packages can be resolved using the following providers:</p>
+<ul>
+<li><a href="https://skypack.dev/">skypack</a></li>
+<li><a href="https://jspm.dev">jspm</a></li>
+<li>local (<code>/node_modules</code>) (not implemented yet).</li>
+</ul>
+<h2>Work In Progress</h2>
+<p>Please don’t use <code>ts-module-browser</code> in production.</p>
+<ul>
+<li>[x] Compile typescript in browser</li>
+<li>[x] Load packages from CDN</li>
+<li>[x] Compile local files</li>
+<li>[x] Compile from <code>script[src]</code></li>
+<li>[x] Load packages from local files</li>
+<li>[ ] Load packages from <code>/node_modules</code></li>
+<li>[ ] Parse versions from package.json and lock
+<ul>
+<li>[x] package-lock.json</li>
+<li>[x] yarn.lock v1</li>
+<li>[x] yarn.lock v2</li>
+<li>[ ] parse protocols</li>
+</ul>
+</li>
+</ul>
+<h2>License</h2>
+<p><code>ts-module-browser</code> is <a href="./LICENSE">MIT licensed</a>.</p>
+</main>
+  
+
+</body></html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React + Styled from CDN</title>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/ts-module-browser@latest"
+      data-tsmb-sw="/sw.js"
+      data-tsmb-resolver="skypack"
+    ></script>
+
+    <script type="ts-module-browser">
+      import * as lodash from "lodash";
+      import * as React from "react";
+      import * as ReactDOM from "react-dom";
+      import { ThemeProvider } from 'styled-components'
+      import { theme } from './src/theme'
+      import { Box, Button } from './src/components'
+
+      function App() {
+        function onClick() {
+          alert('Hello');
+        }
+
+        return (
+          <ThemeProvider theme={theme}>
+            <Box>
+              <Button onClick={onClick}>
+                hello world
+              </Button>
+            </Box>
+          </ThemeProvider>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById('container'));
+    </script>
+  </head>
+  <body>
+    <div id="container"></div>
+  </body>
+</html>
