@@ -176,8 +176,8 @@ async function getLocalPackageVersions() {
       }
     }
   } catch (e) {
-    log.error(
-      "An error occured while parsing lockfile and package.json, so latest versions of packages would be loaded"
+    log.info(
+      "Could not get lockfile and package.json, so latest versions of packages would be loaded"
     );
   } finally {
     return {};

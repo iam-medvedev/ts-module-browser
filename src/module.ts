@@ -1,10 +1,16 @@
 import {
   createScript,
   localSearchPath,
+  log,
   ModuleError,
   Resolver,
   TraverseResult,
 } from "./utils";
+
+type Config = {
+  serviceWorkerPath?: string;
+  resolver: Resolver;
+};
 
 /** Injecting scripts in DOM */
 function injectScripts({
@@ -57,46 +63,53 @@ async function parseScriptsTags() {
 
 /** Service worker for transpiling local files */
 async function startServiceWorker(swPath: string) {
-  if ("serviceWorker" in navigator) {
-    return navigator.serviceWorker.register(swPath);
-  }
+  try {
+    if ("serviceWorker" in navigator) {
+      return navigator.serviceWorker.register(swPath);
+    }
 
-  throw new ModuleError(
-    "Cannot install service worker. So local files will not work."
-  );
+    throw new ModuleError("Service worker is not supported");
+  } catch (e) {
+    throw new ModuleError(e.message);
+  }
 }
 
-/** Getting config from <script> */
-function getConfig() {
-  const swPrefix = "data-tsmb-sw";
-  const resolverPrefix = "data-tsmb-resolver";
+/** Getting config from <script type="ts-module-browser-config"> */
+function getConfig(): Config {
+  const initialConfig = { resolver: Resolver.local };
 
-  const script = document.querySelector(`[${swPrefix}]`);
-  const swPath = script?.getAttribute(swPrefix);
-  const resolver =
-    (script?.getAttribute(resolverPrefix) as Resolver) || Resolver.local;
+  try {
+    const scriptConfig = document.querySelector(
+      `[type="ts-module-browser-config"]`
+    );
+    if (scriptConfig?.textContent) {
+      const config = JSON.parse(scriptConfig.textContent) as Config;
 
-  return { swPath, resolver };
+      return { ...initialConfig, ...config };
+    }
+  } catch (e) {}
+
+  return initialConfig;
 }
 
 /** Transpile code with service worker */
 async function buildCodeInSW(sources: string[], resolver: Resolver) {
-  return (await fetch(localSearchPath, {
-    method: "POST",
-    body: JSON.stringify({
-      sources,
-      resolver,
-    }),
-  }).then((res) => res.json())) as TraverseResult;
+  try {
+    return (await fetch(localSearchPath, {
+      method: "POST",
+      body: JSON.stringify({
+        sources,
+        resolver,
+      }),
+    }).then((res) => res.json())) as TraverseResult;
+  } catch (e) {
+    log.error("An error occured while building sources");
+  }
 }
 
 /** Start compiling ts-module-browser */
 export async function start() {
   const config = getConfig();
-
-  if (!config.swPath) {
-    throw new ModuleError("Provide service worker path");
-  }
 
   if (config.resolver === Resolver.local) {
     throw new ModuleError(
@@ -104,15 +117,24 @@ export async function start() {
     );
   }
 
-  await startServiceWorker(config.swPath);
+  if (config.serviceWorkerPath) {
+    await startServiceWorker(config.serviceWorkerPath);
+  } else {
+    log.info(
+      "Service Worker path is not set. Set the attribute script[data-tsmb-sw] or register your own Service Worker."
+    );
+  }
+
   const sources = await parseScriptsTags();
   const result = await buildCodeInSW(sources, config.resolver);
 
-  await injectScripts({
-    modules: result.modules,
-    importmap: {
-      ...result.packages,
-      ...result.filePaths,
-    },
-  });
+  if (result) {
+    await injectScripts({
+      modules: result.modules,
+      importmap: {
+        ...result.packages,
+        ...result.filePaths,
+      },
+    });
+  }
 }

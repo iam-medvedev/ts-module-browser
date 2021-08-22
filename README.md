@@ -17,10 +17,10 @@
 
 ## Run examples
 
-You can see the [source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples) code of the examples, or [see it in action](https://iam-medvedev.github.io/ts-module-browser/examples).
+You can see the [source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples) code of the examples, or [see it in action](https://ts-module-browser.js.org/examples).
 
-- React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
-- React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn), [live](https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
+- React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn), [live](https://ts-module-browser.js.org/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
+- React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn), [live](https://ts-module-browser.js.org/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
 
 Also you can run the examples locally using the command:
 ```bash
@@ -50,8 +50,16 @@ self.importScripts("https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js");
 ```html
 <div id="container"></div>
 
-<!-- Load ts-module-browser and provide path to your local sw.js file -->
-<script src="https://unpkg.com/ts-module-browser@1.3.5" data-tsmb-sw="/sw.js" data-tsmb-resolver="skypack"></script>
+<!-- Configure ts-module-browser instance -->
+<script type="ts-module-browser-config">
+  {
+    "serviceWorkerPath": "/sw.js",
+    "resolver": "skypack"
+  }
+</script>
+
+<!-- Load ts-module-browser -->
+<script src="https://unpkg.com/ts-module-browser@1.3.5"></script>
 
 <!-- Write your code -->
 <script type="ts-module-browser">
@@ -81,7 +89,15 @@ yarn install ts-module-browser -D
 <script src="node_modules/ts-module-browser/dist/module.js" data-tsmb-sw="node_modules/ts-module-browser/dist/sw.js" data-tsmb-resolver="local"></script>
 ```
 
-### Available package resolvers
+## Configuration
+
+### Service worker
+**`serviceWorkerPath`** (default: `undefined`)
+Path to local `sw.js` (see [usage](#usage))
+
+### Package resolvers
+**`resolver`** (default: `local`)
+
 All packages can be resolved using the following providers:
 
 - [skypack](https://skypack.dev/)
