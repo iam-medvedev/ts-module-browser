@@ -35,10 +35,10 @@
   Run typescript in browser with <code>script[type="ts-module-browser"]</code> without bundler
 </div>
 <h2>Run examples</h2>
-<p>You can see the <a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples">source</a> code of the examples, or <a href="https://iam-medvedev.github.io/ts-module-browser/examples">see it in action</a>.</p>
+<p>You can see the <a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples">source</a> code of the examples, or <a href="https://ts-module-browser.js.org/examples">see it in action</a>.</p>
 <ul>
-<li>React from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn">source</a>, <a href="https://iam-medvedev.github.io/ts-module-browser/examples/react-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn">codesandbox</a>)</li>
-<li>React + Styled Components from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn">source</a>, <a href="https://iam-medvedev.github.io/ts-module-browser/examples/react-styled-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn">codesandbox</a>)</li>
+<li>React from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn">source</a>, <a href="https://ts-module-browser.js.org/examples/react-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn">codesandbox</a>)</li>
+<li>React + Styled Components from CDN (<a href="http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn">source</a>, <a href="https://ts-module-browser.js.org/examples/react-styled-cdn">live</a>, <a href="https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn">codesandbox</a>)</li>
 </ul>
 <p>Also you can run the examples locally using the command:</p>
 <pre><code class="hljs language-bash">$ yarn examples
@@ -61,8 +61,16 @@ self.importScripts(<span class="hljs-string">"https://unpkg.com/ts-module-browse
 <p><code>/index.html</code>:</p>
 <pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-<span class="hljs-comment">&lt;!-- Load ts-module-browser and provide path to your local sw.js file --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/ts-module-browser@1.3.5"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"skypack"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- Configure ts-module-browser instance --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"ts-module-browser-config"</span>&gt;</span><span class="javascript">
+  {
+    <span class="hljs-string">"serviceWorkerPath"</span>: <span class="hljs-string">"/sw.js"</span>,
+    <span class="hljs-string">"resolver"</span>: <span class="hljs-string">"skypack"</span>
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Load ts-module-browser --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/ts-module-browser@1.3.5"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Write your code --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"ts-module-browser"</span>&gt;</span><span class="javascript">
@@ -86,7 +94,12 @@ self.importScripts(<span class="hljs-string">"https://unpkg.com/ts-module-browse
 <pre><code class="hljs language-html"><span class="hljs-comment">&lt;!-- Provide path to ts-module-browser location --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"node_modules/ts-module-browser/dist/module.js"</span> <span class="hljs-attr">data-tsmb-sw</span>=<span class="hljs-string">"node_modules/ts-module-browser/dist/sw.js"</span> <span class="hljs-attr">data-tsmb-resolver</span>=<span class="hljs-string">"local"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-<h3>Available package resolvers</h3>
+<h2>Configuration</h2>
+<h3>Service worker</h3>
+<p><strong><code>serviceWorkerPath</code></strong> (default: <code>undefined</code>)
+Path to local <code>sw.js</code> (see <a href="#usage">usage</a>)</p>
+<h3>Package resolvers</h3>
+<p><strong><code>resolver</code></strong> (default: <code>local</code>)</p>
 <p>All packages can be resolved using the following providers:</p>
 <ul>
 <li><a href="https://skypack.dev/">skypack</a></li>
