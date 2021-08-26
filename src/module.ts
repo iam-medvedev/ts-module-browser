@@ -1,3 +1,4 @@
+import { dispatchEvent, EventType } from "./events";
 import {
   createScript,
   localSearchPath,
@@ -103,38 +104,47 @@ async function buildCodeInSW(sources: string[], resolver: Resolver) {
       }),
     }).then((res) => res.json())) as TraverseResult;
   } catch (e) {
-    log.error("An error occured while building sources");
+    throw new ModuleError("An error occured while building sources");
   }
 }
 
 /** Start compiling ts-module-browser */
 export async function start() {
+  dispatchEvent(EventType.Init);
+
   const config = getConfig();
 
   if (config.resolver === Resolver.local) {
+    dispatchEvent(EventType.Error);
     throw new ModuleError(
       "Local resolver is not implemented yet. Please provide another one."
     );
   }
 
-  if (config.serviceWorkerPath) {
-    await startServiceWorker(config.serviceWorkerPath);
-  } else {
-    log.info(
-      "Service Worker path is not set. Set the attribute script[data-tsmb-sw] or register your own Service Worker."
-    );
-  }
+  try {
+    if (config.serviceWorkerPath) {
+      await startServiceWorker(config.serviceWorkerPath);
+    } else {
+      log.info(
+        "Service Worker path is not set. Set the attribute script[data-tsmb-sw] or register your own Service Worker."
+      );
+    }
 
-  const sources = await parseScriptsTags();
-  const result = await buildCodeInSW(sources, config.resolver);
+    const sources = await parseScriptsTags();
+    const result = await buildCodeInSW(sources, config.resolver);
 
-  if (result) {
-    await injectScripts({
-      modules: result.modules,
-      importmap: {
-        ...result.packages,
-        ...result.filePaths,
-      },
-    });
+    if (result) {
+      await injectScripts({
+        modules: result.modules,
+        importmap: {
+          ...result.packages,
+          ...result.filePaths,
+        },
+      });
+    }
+
+    dispatchEvent(EventType.Success);
+  } catch (e) {
+    dispatchEvent(EventType.Error, e);
   }
 }

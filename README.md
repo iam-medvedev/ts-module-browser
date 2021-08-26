@@ -21,6 +21,7 @@ You can see the [source](http://github.com/iam-medvedev/ts-module-browser/tree/m
 
 - React from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn), [live](https://ts-module-browser.js.org/examples/react-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-cdn))
 - React + Styled Components from CDN ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn), [live](https://ts-module-browser.js.org/examples/react-styled-cdn), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/react-styled-cdn))
+- With preloader ([source](http://github.com/iam-medvedev/ts-module-browser/tree/master/examples/with-preloader), [live](https://ts-module-browser.js.org/examples/with-preloader), [codesandbox](https://githubbox.com/iam-medvedev/ts-module-browser/tree/master/examples/with-preloader))
 
 Also you can run the examples locally using the command:
 ```bash
@@ -40,10 +41,10 @@ The code in the browser is transpiled using a Service Worker. Due to Service Wor
 `/sw.js`
 ```javascript
 // Load typescript (you can use any version you want)
-self.importScripts("https://unpkg.com/typescript@4.3.5/lib/typescriptServices.js");
+self.importScripts("https://cdn.jsdelivr.net/npm/typescript@4.3.5/lib/typescriptServices.js");
 
 // Load sw code from CDN
-self.importScripts("https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js");
+self.importScripts("https://cdn.jsdelivr.net/npm/ts-module-browser@latest/dist/sw.js");
 ```
 
 `/index.html`:
@@ -59,7 +60,7 @@ self.importScripts("https://unpkg.com/ts-module-browser@1.3.5/dist/sw.js");
 </script>
 
 <!-- Load ts-module-browser -->
-<script src="https://unpkg.com/ts-module-browser@1.3.5"></script>
+<script src="https://cdn.jsdelivr.net/npm/ts-module-browser@latest"></script>
 
 <!-- Write your code -->
 <script type="ts-module-browser">

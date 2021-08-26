@@ -254,11 +254,11 @@ sw.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
   if (url.origin === sw.location.origin) {
-    // Intercepting script request
+    // Intercepting script request (except .js)
     if (
       event.request.method?.toLowerCase() === "get" &&
       event.request.destination === "script" &&
-      url.origin === sw.location.origin
+      !url.pathname.endsWith(".js")
     ) {
       if (whetherFileIsScript(url.pathname)) {
         // Transpile typescript on the fly
